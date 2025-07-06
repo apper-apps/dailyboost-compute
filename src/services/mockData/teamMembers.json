@@ -1,0 +1,23 @@
+[
+  {
+    "Id": 1,
+    "email": "john.doe@company.com",
+    "invitedBy": "user-1",
+    "joinedDate": "2024-01-10T00:00:00.000Z",
+    "lastViewedQuote": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "Id": 2,
+    "email": "jane.smith@company.com",
+    "invitedBy": "user-1",
+    "joinedDate": "2024-01-12T00:00:00.000Z",
+    "lastViewedQuote": "2024-01-14T09:30:00.000Z"
+  },
+  {
+    "Id": 3,
+    "email": "mike.johnson@company.com",
+    "invitedBy": "user-1",
+    "joinedDate": "2024-01-13T00:00:00.000Z",
+    "lastViewedQuote": "2024-01-15T07:45:00.000Z"
+  }
+]

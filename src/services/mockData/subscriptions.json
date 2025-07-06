@@ -1,0 +1,11 @@
+[
+  {
+    "Id": 1,
+    "userId": "user-1",
+    "tier": "free",
+    "status": "trial",
+    "currentPeriodEnd": "2024-01-18T00:00:00.000Z",
+    "teamMemberLimit": 0,
+    "trialEndDate": "2024-01-18T00:00:00.000Z"
+  }
+]
