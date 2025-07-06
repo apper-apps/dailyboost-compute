@@ -1,25 +1,25 @@
 import { useState, useEffect } from 'react';
-import { userService } from '@/services/api/userService';
+import { useAuth } from '@/contexts/AuthContext';
 import { subscriptionService } from '@/services/api/subscriptionService';
 
 export const useUserData = () => {
-  const [user, setUser] = useState(null);
+  const { user, isAuthenticated } = useAuth();
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchUserData = async () => {
+  const fetchSubscriptionData = async () => {
+    if (!isAuthenticated || !user) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setError(null);
-      const [userData, subscriptionData] = await Promise.all([
-        userService.getCurrentUser(),
-        subscriptionService.getCurrentSubscription()
-      ]);
-      
-      setUser(userData);
+      const subscriptionData = await subscriptionService.getCurrentSubscription();
       setSubscription(subscriptionData);
     } catch (err) {
-      setError(err.message || 'Failed to fetch user data');
+      setError(err.message || 'Failed to fetch subscription data');
     } finally {
       setLoading(false);
     }
@@ -27,12 +27,12 @@ export const useUserData = () => {
 
   const refreshData = async () => {
     setLoading(true);
-    await fetchUserData();
+    await fetchSubscriptionData();
   };
 
   useEffect(() => {
-    fetchUserData();
-  }, []);
+    fetchSubscriptionData();
+  }, [isAuthenticated, user]);
 
   return {
     user,
