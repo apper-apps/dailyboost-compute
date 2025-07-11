@@ -1,45 +1,61 @@
-import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import Button from '@/components/atoms/Button';
-import PlanBadge from '@/components/molecules/PlanBadge';
-import ApperIcon from '@/components/ApperIcon';
-import { useUserData } from '@/hooks/useUserData';
+import React, { useContext, useState } from "react";
+import { Link, useLocation, NavLink } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { AuthContext } from "@/App";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import PlanBadge from "@/components/atoms/PlanBadge";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { subscription } = useUserData();
-
-  const navigationItems = [
-    { path: '/', label: "Today's Quote", icon: 'Quote' },
-    { path: '/team', label: 'My Team', icon: 'Users' },
-    { path: '/subscription', label: 'Subscription', icon: 'Crown' },
-    { path: '/history', label: 'Quote History', icon: 'History' },
+  const { logout } = useContext(AuthContext);
+  
+  // Mock subscription data - replace with actual context/hook
+  const subscription = { tier: 'premium' };
+  
+  const navigation = [
+    { name: 'Dashboard', href: '/', icon: 'Home', label: 'Dashboard', path: '/' },
+    { name: 'Quote History', href: '/history', icon: 'Clock', label: 'Quote History', path: '/history' },
+    { name: 'Team', href: '/team', icon: 'Users', label: 'Team', path: '/team' },
+    { name: 'Subscription', href: '/subscription', icon: 'Crown', label: 'Subscription', path: '/subscription' }
   ];
+  
+  const navigationItems = navigation;
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  const isActive = (href) => {
+    if (href === '/') {
+      return location.pathname === '/'
+    }
+    return location.pathname.startsWith(href)
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200/50">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <NavLink to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-              <ApperIcon name="Sunrise" className="w-5 h-5 text-white" />
+          <Link to="/" className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <ApperIcon name="Zap" className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold gradient-text">DailyBoost</span>
-          </NavLink>
+            <span className="text-xl font-bold text-gray-900">DailyBoost</span>
+          </Link>
 
-          {/* Desktop Navigation */}
+{/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navigationItems.map((item) => (
+            {navigation.map((item) => (
               <NavLink
-                key={item.path}
-                to={item.path}
+                key={item.href}
+                to={item.href}
                 className={({ isActive }) =>
                   `flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
                     isActive
@@ -49,9 +65,20 @@ const Header = () => {
                 }
               >
                 <ApperIcon name={item.icon} className="w-4 h-4" />
-                <span>{item.label}</span>
+                <span>{item.name}</span>
               </NavLink>
             ))}
+            
+            {/* Logout Button */}
+            <Button
+              variant="ghost"
+              size="medium"
+              onClick={handleLogout}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+            >
+              <ApperIcon name="LogOut" className="w-4 h-4" />
+              <span>Logout</span>
+            </Button>
           </nav>
 
           {/* Plan Badge & Mobile Menu Button */}
@@ -59,15 +86,18 @@ const Header = () => {
             {subscription && (
               <PlanBadge plan={subscription.tier} size="small" />
             )}
-            
-            <Button
-              variant="ghost"
-              size="medium"
-              onClick={toggleMobileMenu}
-              className="md:hidden"
-            >
-              <ApperIcon name={isMobileMenuOpen ? "X" : "Menu"} className="w-5 h-5" />
-            </Button>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="small"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2"
+              >
+                <ApperIcon name={isMobileMenuOpen ? "X" : "Menu"} className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -100,6 +130,19 @@ const Header = () => {
                   <span>{item.label}</span>
                 </NavLink>
               ))}
+              
+              {/* Mobile Logout Button */}
+              <div className="pt-4 border-t border-gray-200">
+                <Button
+                  variant="ghost"
+                  size="medium"
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center space-x-2 text-gray-600 hover:text-gray-900"
+                >
+                  <ApperIcon name="LogOut" className="w-4 h-4" />
+                  <span>Logout</span>
+                </Button>
+              </div>
             </div>
           </motion.div>
         )}

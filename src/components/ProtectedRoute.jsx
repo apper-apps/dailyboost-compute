@@ -1,20 +1,21 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import Loading from '@/components/ui/Loading';
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import Loading from '@/components/ui/Loading'
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated } = useSelector((state) => state.user)
+  const navigate = useNavigate()
 
-  if (loading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login')
+    }
+  }, [isAuthenticated, navigate])
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Loading />
   }
 
-  return children;
-};
-
-export default ProtectedRoute;
+  return children
+}

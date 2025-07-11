@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import Card from '@/components/atoms/Card';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import QuoteCard from '@/components/molecules/QuoteCard';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import Empty from '@/components/ui/Empty';
-import ApperIcon from '@/components/ApperIcon';
-import { useQuoteHistory } from '@/hooks/useQuoteHistory';
-import { format } from 'date-fns';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useQuoteHistory } from "@/hooks/useQuoteHistory";
+import { format } from "date-fns";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import QuoteCard from "@/components/molecules/QuoteCard";
 
 const QuoteHistory = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,12 +19,12 @@ const QuoteHistory = () => {
 
   const categories = ['all', 'motivation', 'success', 'leadership', 'wisdom', 'inspiration'];
 
-  const filteredQuotes = quotes.filter(quote => {
+const filteredQuotes = quotes.filter(quote => {
     const matchesSearch = quote.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         quote.author.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || quote.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+                         quote.author.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesCategory = selectedCategory === 'all' || quote.category === selectedCategory
+    return matchesSearch && matchesCategory
+  })
 
   if (loading) return <Loading type="history" />;
   if (error) return <Error error={error} onRetry={refreshHistory} />;
@@ -136,12 +136,12 @@ const QuoteHistory = () => {
                             <blockquote className="text-gray-900 font-medium leading-relaxed">
                               "{quote.text}"
                             </blockquote>
-                            <div className="flex items-center justify-between">
+<div className="flex items-center justify-between">
                               <cite className="text-sm text-gray-600 not-italic">
                                 — {quote.author}
                               </cite>
                               <span className="text-xs text-gray-500">
-                                {format(new Date(quote.displayDate), 'MMM d')}
+                                {format(new Date(quote.display_date), 'MMM d')}
                               </span>
                             </div>
                           </div>
